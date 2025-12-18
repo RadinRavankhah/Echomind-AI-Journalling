@@ -1,4 +1,5 @@
 import { AuthTokens, JournalEntry, AnalyticsOverview } from '../types';
+import { decodeJWT, isTokenExpired } from '../utils/jwt';
 
 const BASE_URL = 'http://localhost:8000/api/v1';
 
@@ -66,7 +67,20 @@ class ApiService {
   }
 
   isAuthenticated() {
-    return !!this.access;
+    if (!this.access) return false;
+    return !isTokenExpired(this.access);
+  }
+
+  private async ensureValidAccessToken() {
+    if (!this.access || !this.refresh) return;
+
+    if (isTokenExpired(this.access)) {
+      const refreshed = await this.refreshToken();
+      if (!refreshed) {
+        this.logout();
+        throw new Error('Session expired');
+      }
+    }
   }
 
   // Auth
