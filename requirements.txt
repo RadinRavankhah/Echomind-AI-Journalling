@@ -1,7 +1,9 @@
 django
 djangorestframework
 djangorestframework-simplejwt
+django-cors-headers
 
 langchain
 langchain-core
 langchain-community
+chromadb
