@@ -36,6 +36,14 @@ class JournalEntryViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+    
+    def destroy(self, request, *args, **kwargs):
+        entry = self.get_object()
+        entry.delete()
+        return Response(
+            {"detail": "Journal entry deleted successfully"},
+            status=status.HTTP_204_NO_CONTENT
+        )
 
     @action(detail=True, methods=["post"])
     def toggle_pin(self, request, pk=None):
