@@ -1,0 +1,14 @@
+django
+djangorestframework
+djangorestframework-simplejwt
+langchain
+chromadb
+langchain-community
+python-dotenv
+pydantic
+# psycopg2-binary  # Optional for PostgreSQL
+# django-filter
+# django-cors-headers
+# django-extensions
+# drf-spectacular
+# redis  # For rate limiting (optional)
