@@ -2,6 +2,7 @@
 from rest_framework import viewsets, permissions, filters, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from reflect.services import reflect_entry
 
 from .models import (
     JournalEntry,
@@ -45,13 +46,18 @@ class JournalEntryViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["post"])
     def reflect(self, request, pk=None):
-        """
-        Stub endpoint.
-        Actual LLM logic implemented in reflect app.
-        """
+        entry = self.get_object()  # ownership already enforced
+
+        updated_ids = reflect_entry(entry)
+
+        serializer = self.get_serializer(entry)
         return Response(
-            {"detail": "Reflection triggered"},
-            status=status.HTTP_202_ACCEPTED,
+            {
+                "detail": "Reflection completed",
+                "reflected_responses": updated_ids,
+                "entry": serializer.data,
+            },
+            status=status.HTTP_200_OK,
         )
 
 
