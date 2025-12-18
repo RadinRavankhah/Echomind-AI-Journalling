@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,6 +27,14 @@ SECRET_KEY = 'django-insecure-!f!ny5(32p0^zbm^k1=q3_4dfm(=zz2#x03eiop7abqpo_@ay(
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=7),  # Keep users logged in for 7 days
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),  # Users can refresh for 30 days
+    "ROTATE_REFRESH_TOKENS": True,  # Optional: issue a new refresh token on each refresh
+    "BLACKLIST_AFTER_ROTATION": True,  # Optional: revoke old refresh tokens
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
