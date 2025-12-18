@@ -312,12 +312,12 @@ export default function App() {
           )}
 
           <div className="flex flex-col gap-2">
-            <Accordion title="emotion">
-                {selectedEntry.emotion + '/10'}
-            </Accordion>
+            {/* <Accordion title="plan to do">
+                {selectedEntry.intensity}
+            </Accordion> */}
             {QUESTIONS.map(q => (
-              <Accordion key={q.id} title={q.key}>
-                {selectedEntry.key || '—'}
+              <Accordion key={q.id} title={q.key.replace(/_/g, ' ')} >
+                {selectedEntry[q.key] || '0' ||'—'}
                 {q.type === 'slider' && '/10'}
               </Accordion>
             ))}
