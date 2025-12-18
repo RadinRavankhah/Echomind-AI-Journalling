@@ -32,6 +32,18 @@ class JournalEntry(models.Model):
         on_delete=models.SET_NULL,
         related_name="entries",
     )
+    
+    # EchoMind 10 questions
+    emotion = models.TextField(blank=True)
+    trigger = models.TextField(blank=True)
+    intensity = models.SmallIntegerField(default=-1)  # 0-10 scale
+    physical_effect = models.TextField(blank=True)
+    context = models.TextField(blank=True)
+    patterns = models.TextField(blank=True)
+    related_people = models.TextField(blank=True)
+    self_view_effect = models.TextField(blank=True)
+    preferred_outcome = models.TextField(blank=True)
+    plan_to_do = models.TextField(blank=True)
 
     def __str__(self):
         return f"Entry {self.id} ({self.user})"
