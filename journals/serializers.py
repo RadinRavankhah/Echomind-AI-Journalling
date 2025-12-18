@@ -39,8 +39,8 @@ class EmotionTagSerializer(serializers.ModelSerializer):
 
 
 class JournalEntrySerializer(serializers.ModelSerializer):
-    responses = PromptResponseSerializer(many=True, read_only=True)
-    emotion_tags = EmotionTagSerializer(many=True, read_only=True)
+    # responses = PromptResponseSerializer(many=True, read_only=True)
+    # emotion_tags = EmotionTagSerializer(many=True, read_only=True)
 
     class Meta:
         model = JournalEntry
@@ -50,11 +50,24 @@ class JournalEntrySerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
             "pinned",
-            "session",
-            "responses",
-            "emotion_tags",
+            "emotion",
+            "trigger",
+            "intensity",
+            "physical_effect",
+            "context",
+            "patterns",
+            "related_people",
+            "self_view_effect",
+            "preferred_outcome",
+            "plan_to_do",
+            # "reflection",
         ]
-        read_only_fields = ["created_at", "updated_at", "responses", "emotion_tags"]
+        read_only_fields = [
+            "id",
+            "created_at",
+            "updated_at",
+            # "reflection"
+        ]
 
 
 class ReflectionSessionSerializer(serializers.ModelSerializer):

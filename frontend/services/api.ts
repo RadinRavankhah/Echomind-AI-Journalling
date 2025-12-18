@@ -8,6 +8,8 @@ class ApiService {
   private refresh: string | null = localStorage.getItem('echo_refresh');
 
   private async request(path: string, options: RequestInit = {}) {
+    await this.ensureValidAccessToken();
+
     const headers = new Headers(options.headers);
     if (this.access) {
       headers.set('Authorization', `Bearer ${this.access}`);
@@ -16,7 +18,7 @@ class ApiService {
 
     let response = await fetch(`${BASE_URL}${path}`, { ...options, headers });
 
-    // Handle Token Refresh
+    // Fallback refresh (race-condition safety)
     if (response.status === 401 && this.refresh) {
       const refreshed = await this.refreshToken();
       if (refreshed) {
@@ -29,6 +31,9 @@ class ApiService {
       const error = await response.json().catch(() => ({}));
       throw new Error(error.detail || 'API Request Failed');
     }
+
+    // DELETE returns 204
+    if (response.status === 204) return null;
 
     return response.json();
   }
@@ -102,7 +107,7 @@ class ApiService {
     return this.request(`/journals/entries/${id}/`);
   }
 
-  async createEntry(data: { title: string; intensity: number; responses: any }): Promise<JournalEntry> {
+  async createEntry(data: Partial<JournalEntry>): Promise<JournalEntry> {
     return this.request('/journals/entries/', {
       method: 'POST',
       body: JSON.stringify(data),

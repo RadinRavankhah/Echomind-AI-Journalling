@@ -76,13 +76,24 @@ export default function App() {
   const handleCreateEntry = async () => {
     setIsLoading(true);
     try {
-      const intensity = Number(responses['intensity'] || 5);
-      const title = String(responses['emotion'] || 'New Reflection').slice(0, 50);
-      const entry = await api.createEntry({ title, intensity, responses });
+      const payload: any = {
+        title: String(responses['emotion'] || 'New Reflection').slice(0, 50),
+      };
+
+      QUESTIONS.forEach(q => {
+        payload[q.key] = responses[q.key] ?? '';
+      });
+
+      payload.intensity =
+        typeof payload.intensity === 'number'
+          ? payload.intensity
+          : 5;
+
+      const entry = await api.createEntry(payload);
       setEntries([entry, ...entries]);
       setSelectedEntry(entry);
       setScreen(AppScreen.ENTRY_DETAIL);
-    } catch (e) {
+    } catch {
       setErrorMsg('Failed to save reflection');
     } finally {
       setIsLoading(false);
@@ -187,7 +198,12 @@ export default function App() {
 
   const renderReflectionFlow = () => {
     const q = QUESTIONS[currentIndex];
-    const val = responses[q.key] || (q.type === 'slider' ? 5 : '');
+    const val =
+      responses[q.key] !== undefined
+        ? responses[q.key]
+        : q.type === 'slider'
+        ? 5
+        : '';
     
     return (
       <div className="flex flex-col h-full p-6">
@@ -296,9 +312,12 @@ export default function App() {
           )}
 
           <div className="flex flex-col gap-2">
+            <Accordion title="emotion">
+                {selectedEntry.emotion + '/10'}
+            </Accordion>
             {QUESTIONS.map(q => (
               <Accordion key={q.id} title={q.key}>
-                {selectedEntry.responses[q.key] || '—'}
+                {selectedEntry.key || '—'}
                 {q.type === 'slider' && '/10'}
               </Accordion>
             ))}

@@ -19,13 +19,23 @@ export interface Question {
 export interface JournalEntry {
   id: string;
   title: string;
-  intensity: number;
   date: string;
   responses: Record<string, string | number>;
   reflection?: string;
   is_pinned: boolean;
   created_at: string;
   updated_at: string;
+
+  emotion: string;
+  trigger: string;
+  intensity: number;
+  physical_effect: string;
+  context: string;
+  patterns: string;
+  related_people: string;
+  self_view_effect: string;
+  preferred_outcome: string;
+  plan_to_do: string;
 }
 
 export interface AuthTokens {

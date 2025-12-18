@@ -67,7 +67,14 @@ class JournalEntryViewSet(viewsets.ModelViewSet):
             },
             status=status.HTTP_200_OK,
         )
-
+        
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            print(serializer.errors)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=201)
 
 class PromptResponseViewSet(viewsets.ModelViewSet):
     serializer_class = PromptResponseSerializer
