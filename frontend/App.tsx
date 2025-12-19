@@ -90,7 +90,7 @@ export default function App() {
           : 5;
 
       const entry = await api.createEntry(payload);
-      setEntries([entry, ...entries]);
+      setEntries(prev => [...prev, entry]);
       setSelectedEntry(entry);
       setScreen(AppScreen.ENTRY_DETAIL);
     } catch {
@@ -246,6 +246,18 @@ export default function App() {
     );
   };
 
+  const sortedEntries = React.useMemo(() => {
+    return [...entries].sort((a, b) => {
+      // 1️⃣ Pinned first
+      if (a.pinned !== b.pinned) {
+        return a.pinned ? -1 : 1;
+      }
+
+      // 2️⃣ Newest first
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+  }, [entries]);
+
   const renderLibrary = () => (
     <div className="flex flex-col h-full p-6">
       <div className="flex items-center gap-4 mb-8">
@@ -254,7 +266,7 @@ export default function App() {
       </div>
 
       <div className="flex-1 overflow-y-auto no-scrollbar flex flex-col gap-4">
-        {entries.map(entry => (
+        {sortedEntries.map(entry => (
           <div key={entry.id} onClick={() => { setSelectedEntry(entry); setScreen(AppScreen.ENTRY_DETAIL); }}
                className="bg-[#101218] border border-[#2A2C32] rounded-xl p-6 cursor-pointer hover:border-gray-500 transition-all group">
             <div className="flex justify-between items-start mb-2">
