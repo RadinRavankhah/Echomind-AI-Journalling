@@ -6,7 +6,8 @@ export enum AppScreen {
   LIBRARY = 'LIBRARY',
   ENTRY_DETAIL = 'ENTRY_DETAIL',
   ANALYTICS = 'ANALYTICS',
-  SETTINGS = 'SETTINGS'
+  SETTINGS = 'SETTINGS',
+    MEMORY = 'MEMORY'
 }
 
 export interface Question {
@@ -56,4 +57,10 @@ export interface AnalyticsOverview {
 
 export interface User {
   username: string;
+}
+
+export interface MemoryItem {
+  id: string;
+  text: string;
+  occurrenceCount: number;
 }

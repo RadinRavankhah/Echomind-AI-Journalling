@@ -1,4 +1,4 @@
-import { Question } from './types';
+import { Question, MemoryItem } from './types';
 
 export const QUESTIONS: Question[] = [
   { id: 1, key: 'emotion', text: 'How are you feeling right now? Use as many words as you like.', type: 'text' },
@@ -11,4 +11,17 @@ export const QUESTIONS: Question[] = [
   { id: 8, key: 'self_view_effect', text: 'How does this experience make you see yourself, if at all?', type: 'text' },
   { id: 9, key: 'preferred_outcome', text: 'What would be the best resolution or outcome for you right now?', type: 'text' },
   { id: 10, key: 'plan_to_do', text: 'What steps are you thinking of taking next?', type: 'text' },
+];
+
+export const MOCK_MEMORIES: MemoryItem[] = [
+  {
+    id: '1',
+    text: "Work deadlines often make you feel anxious and tense.",
+    occurrenceCount: 5
+  },
+  {
+    id: '2',
+    text: "You tend to be hard on yourself during periods of high responsibility.",
+    occurrenceCount: 3
+  }
 ];

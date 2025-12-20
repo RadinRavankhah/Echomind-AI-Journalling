@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { AppScreen, JournalEntry, AnalyticsOverview } from './types';
-import { QUESTIONS } from './constants';
+import { AppScreen, JournalEntry, AnalyticsOverview, MemoryItem } from './types';
+import { QUESTIONS, MOCK_MEMORIES } from './constants';
 import { Button } from './components/Button';
 import { TextInput, TextArea } from './components/Input';
 import { EchoCircle } from './components/EchoCircle';
@@ -9,7 +9,7 @@ import { Accordion } from './components/Accordion';
 import { api } from './services/api';
 import { 
   ArrowLeft, Settings, History, LogOut, ChevronRight, X, 
-  Trash2, Check, Sparkles, BarChart2, Pin, PinOff 
+  Trash2, Check, Sparkles, BarChart2, Pin, PinOff, Brain 
 } from 'lucide-react';
 import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, 
@@ -27,6 +27,10 @@ export default function App() {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [analytics, setAnalytics] = useState<AnalyticsOverview | null>(null);
   const [selectedEntry, setSelectedEntry] = useState<JournalEntry | null>(null);
+
+  // Memory State
+  const [memories, setMemories] = useState<MemoryItem[]>(MOCK_MEMORIES);
+  const [memoryToDelete, setMemoryToDelete] = useState<string | null>(null);
 
   // Reflection Flow State
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -397,6 +401,68 @@ export default function App() {
     );
   };
 
+  const renderMemory = () => (
+    <div className="flex flex-col h-full p-6 animate-fade-in">
+      {/* Header */}
+      <div className="flex items-center gap-4 mb-2">
+         <button onClick={() => setScreen(AppScreen.SETTINGS)} className="text-gray-500 hover:text-[#F5F5F2] transition-colors">
+           <ArrowLeft size={24} />
+         </button>
+         <h2 className="text-xl font-serif text-[#F5F5F2]">Your Memory</h2>
+      </div>
+      <p className="text-sm text-gray-400 font-sans mb-8 pl-10 max-w-sm leading-relaxed">
+        These are patterns EchoMind has noticed over time. You’re always in control.
+      </p>
+  
+      {/* List */}
+      <div className="flex flex-col gap-4 overflow-y-auto no-scrollbar pb-12">
+        {memories.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <p className="text-[#F5F5F2] font-serif mb-2">EchoMind hasn’t formed any memories yet.</p>
+            <p className="text-xs text-gray-600 font-sans uppercase tracking-widest">Memories appear only when patterns repeat over time.</p>
+          </div>
+        ) : (
+          memories.map(m => (
+            <div key={m.id} className="bg-[#101218] border border-[#2A2C32] rounded-xl p-6 flex justify-between items-start group hover:border-gray-600 transition-colors animate-fade-in">
+               <div className="flex-1 pr-4">
+                  <p className="font-serif text-[#F5F5F2] text-lg leading-relaxed mb-3">
+                    {m.text}
+                  </p>
+                  <span className="text-xs text-gray-600 font-sans tracking-wide">
+                    Seen in {m.occurrenceCount} reflections
+                  </span>
+               </div>
+               <button 
+                 onClick={() => setMemoryToDelete(m.id)} 
+                 className="text-[#2A2C32] group-hover:text-red-900/50 hover:!text-red-400 transition-colors p-2"
+                 aria-label="Remove memory"
+               >
+                  <Trash2 size={18} />
+               </button>
+            </div>
+          ))
+        )}
+      </div>
+
+      <Modal 
+          isOpen={!!memoryToDelete} 
+          title="Remove this memory?" 
+          description="This will stop EchoMind from using it to personalize your experience. This action cannot be undone."
+          primaryAction={handleDeleteMemory}
+          primaryLabel="Remove"
+          secondaryAction={() => setMemoryToDelete(null)}
+          secondaryLabel="Cancel"
+        />
+    </div>
+  );
+
+  const handleDeleteMemory = () => {
+    if (memoryToDelete) {
+      setMemories(prev => prev.filter(m => m.id !== memoryToDelete));
+      setMemoryToDelete(null);
+    }
+  };
+
   const renderSettings = () => (
     <div className="flex flex-col h-full p-6">
       <div className="flex items-center gap-4 mb-8">
@@ -408,6 +474,19 @@ export default function App() {
           <span className="text-[#F5F5F2]">Biometric Lock</span>
           <span className="text-[10px] text-gray-600 uppercase">Pro</span>
         </div>
+
+        {/* Memory Entry Point */}
+          <button
+            onClick={() => setScreen(AppScreen.MEMORY)}
+            className="p-4 border border-[#2A2C32] rounded-lg flex items-center justify-between hover:bg-[#1E1F23] transition-colors group"
+          >
+            <div className="flex items-center gap-3">
+              <Brain size={20} className="text-gray-500 group-hover:text-[#F5F5F2] transition-colors" />
+              <span className="text-[#F5F5F2]">Memory</span>
+            </div>
+            <ChevronRight size={16} className="text-gray-600 group-hover:text-[#F5F5F2] transition-colors" />
+          </button>
+          
         <button onClick={handleLogout} className="flex items-center gap-3 text-red-900/50 p-6 border border-red-900/10 rounded-xl hover:bg-red-900/5 transition-colors">
           <LogOut size={20} />
           <span className="text-sm uppercase tracking-widest">Sign Out</span>
@@ -429,6 +508,7 @@ export default function App() {
         {screen === AppScreen.LIBRARY && renderLibrary()}
         {screen === AppScreen.ENTRY_DETAIL && renderEntryDetail()}
         {screen === AppScreen.ANALYTICS && renderAnalytics()}
+        {screen === AppScreen.MEMORY && renderMemory()}
         {screen === AppScreen.SETTINGS && renderSettings()}
       </div>
     </div>
