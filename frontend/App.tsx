@@ -221,7 +221,7 @@ export default function App() {
             {q.type === 'slider' ? (
               <div className="flex flex-col items-center justify-center h-64 gap-8">
                 <div className="text-6xl font-serif">{val}/10</div>
-                <input type="range" min="0" max="10" step="1" value={val} 
+                <input type="range" min="1" max="10" step="1" value={val} 
                        onChange={e => setResponses(prev => ({ ...prev, [q.key]: Number(e.target.value) }))}
                        className="w-full" />
               </div>
@@ -324,12 +324,9 @@ export default function App() {
           )}
 
           <div className="flex flex-col gap-2">
-            {/* <Accordion title="plan to do">
-                {selectedEntry.intensity}
-            </Accordion> */}
             {QUESTIONS.map(q => (
               <Accordion key={q.id} title={q.key.replace(/_/g, ' ')} >
-                {selectedEntry[q.key] || '0' ||'—'}
+                {selectedEntry[q.key] || '—'}
                 {q.type === 'slider' && '/10'}
               </Accordion>
             ))}
