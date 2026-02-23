@@ -5,10 +5,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 API_KEY = os.getenv('AI_API_KEY')
+BASE_URL = os.getenv('AI_BASE_URL')
 
 client = OpenAI(
-    api_key=str(API_KEY),  # با کلید واقعی خود جایگزین کنید
-    base_url="https://api.avalai.ir/v1",  # آدرس پایه
+    api_key= API_KEY,
+    base_url= BASE_URL,
 )
 
 completion = client.chat.completions.create(
@@ -21,4 +22,4 @@ completion = client.chat.completions.create(
     ],
 )
 
-print(completion.choices[0].message.content)
+print(completion)
