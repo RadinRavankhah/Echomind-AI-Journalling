@@ -50,7 +50,7 @@ npm run dev
 
 ## License
 
-This project is licensed under a proprietary license. See the [LICENSE](./LICENSE) file for full terms.
+This project is licensed under the EchoMind Personal Use License. It may be used for personal, non-commercial purposes only. Commercial use and redistribution are prohibited. See the [LICENSE](./LICENSE) file for full terms.
 
 ## Contributing
 
